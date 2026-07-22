@@ -441,6 +441,73 @@ section{padding:clamp(60px,7.5vw,104px) 0;}
 .cd-box .n{display:inline-block;}
 .cd-box .n.tick{animation:cdPop .5s cubic-bezier(.2,.8,.3,1);}
 
+/* ---------- reflective animated headings (light sweep, NOT a glow) ---------- */
+:root{--sheen:#83B7A9;}                                        /* light reflection band for dark teal headings */
+.hero,.page-hero,.section--dark,.cta-band{--sheen:#F4D9A6;}    /* warm glint for white headings on dark bg */
+@keyframes sheenSweep{0%{background-position:160% 0;}100%{background-position:-60% 0;}}
+@supports ((-webkit-background-clip:text) or (background-clip:text)){
+  h1,h2{
+    background-image:linear-gradient(100deg,currentColor 41%,var(--sheen) 50%,currentColor 59%);
+    background-size:260% 100%;background-position:160% 0;background-repeat:no-repeat;
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    animation:sheenSweep 7s linear infinite;
+  }
+  h2{animation-duration:8s;}
+  /* interactive: hovering a heading speeds the reflection sweep (hero h1 keeps its combined entrance) */
+  h2:hover,.page-hero h1:hover{animation-duration:1.4s;cursor:default;}
+  .hero h1{animation:heroIn .8s .15s both, sheenSweep 7.5s 1.2s linear infinite;}
+  /* keep inline chips readable inside a clipped heading */
+  h1 .count-chip,h2 .count-chip{-webkit-text-fill-color:var(--ink-soft);}
+}
+
+/* ---------- floating chatbot (demo assistant) ---------- */
+.chatbot{position:fixed;right:22px;bottom:22px;z-index:90;font-family:var(--body);}
+.chat-fab{position:relative;width:60px;height:60px;border-radius:50%;border:0;cursor:pointer;
+  background:var(--amber);color:var(--teal);display:grid;place-items:center;
+  box-shadow:0 12px 30px rgba(15,61,62,.30);transition:transform .2s ease,background .2s ease;}
+.chat-fab:hover{transform:translateY(-3px) scale(1.05);background:var(--amber-d);}
+.chat-fab svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.chat-fab .ic-close{display:none;}
+.chatbot.open .chat-fab .ic-chat{display:none;}
+.chatbot.open .chat-fab .ic-close{display:block;}
+.chat-fab .badge{position:absolute;top:-2px;right:-2px;min-width:19px;height:19px;padding:0 4px;border-radius:999px;background:var(--coral);color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center;border:2px solid #fff;}
+.chatbot.open .chat-fab .badge{display:none;}
+.chat-panel{position:absolute;right:0;bottom:74px;width:344px;max-width:calc(100vw - 44px);
+  background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;
+  box-shadow:0 26px 64px rgba(15,61,62,.30);opacity:0;transform:translateY(14px) scale(.98);pointer-events:none;
+  transition:opacity .25s ease,transform .25s ease;display:flex;flex-direction:column;max-height:min(560px,calc(100dvh - 120px));}
+.chatbot.open .chat-panel{opacity:1;transform:none;pointer-events:auto;}
+.chat-head{background:linear-gradient(135deg,var(--teal),var(--teal-2));color:#fff;padding:15px 16px;display:flex;align-items:center;gap:12px;}
+.chat-head .avatar{width:38px;height:38px;border-radius:50%;background:var(--amber);color:var(--teal);display:grid;place-items:center;font-family:var(--head);font-weight:700;font-size:14px;flex:0 0 auto;}
+.chat-head .ch-title{font-family:var(--head);font-weight:700;font-style:italic;font-size:16px;line-height:1.1;color:#fff;}
+.chat-head .ch-sub{font-size:11.5px;color:rgba(255,255,255,.82);display:flex;align-items:center;gap:6px;}
+.chat-head .ch-sub::before{content:"";width:7px;height:7px;border-radius:50%;background:#7ee0a1;display:inline-block;}
+.chat-head .ch-close{margin-left:auto;background:none;border:0;color:#fff;cursor:pointer;font-size:24px;line-height:1;opacity:.85;padding:0 4px;}
+.chat-head .ch-close:hover{opacity:1;}
+.chat-body{padding:15px;overflow-y:auto;flex:1;background:var(--paper);display:flex;flex-direction:column;gap:10px;}
+.msg{max-width:84%;padding:10px 13px;border-radius:15px;font-size:14px;line-height:1.5;animation:msgIn .3s ease both;}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+.msg.bot{background:#fff;border:1px solid var(--line);border-bottom-left-radius:5px;align-self:flex-start;color:var(--ink);}
+.msg.user{background:var(--teal);color:#fff;border-bottom-right-radius:5px;align-self:flex-end;}
+.msg a{color:var(--teal-2);text-decoration:underline;font-weight:600;}
+.msg.user a{color:#fff;}
+.chat-chips{display:flex;flex-wrap:wrap;gap:8px;padding:0 15px 12px;background:var(--paper);}
+.chat-chips button{border:1px solid var(--sage);background:#fff;color:var(--teal-2);font-size:12.5px;font-weight:600;border-radius:999px;padding:7px 12px;cursor:pointer;transition:background .2s,color .2s,border-color .2s;}
+.chat-chips button:hover{background:var(--teal);color:#fff;border-color:var(--teal);}
+.chat-input{display:flex;gap:8px;padding:11px 12px;border-top:1px solid var(--line);background:#fff;}
+.chat-input input{flex:1;min-width:0;border:1px solid var(--line);border-radius:999px;padding:11px 15px;font-family:var(--body);font-size:14px;color:var(--ink);}
+.chat-input input:focus{outline:none;border-color:var(--teal-2);box-shadow:0 0 0 3px rgba(18,100,94,.12);}
+.chat-input button{border:0;background:var(--amber);color:var(--teal);width:42px;height:42px;border-radius:50%;cursor:pointer;display:grid;place-items:center;flex:0 0 auto;transition:background .2s,transform .15s;}
+.chat-input button:hover{background:var(--amber-d);}
+.chat-input button:active{transform:scale(.92);}
+.chat-input button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.chat-fab:focus-visible,.chat-chips button:focus-visible,.chat-input button:focus-visible{outline:3px solid rgba(224,164,88,.7);outline-offset:3px;}
+@media(max-width:560px){
+  .chatbot{right:16px;bottom:16px;}
+  .chat-panel{width:calc(100vw - 32px);bottom:70px;}
+  .chat-fab{width:56px;height:56px;}
+}
+
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none!important;transition-duration:.01ms!important;}
   .js .reveal{opacity:1!important;transform:none!important;}

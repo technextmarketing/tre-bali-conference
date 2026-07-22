@@ -231,4 +231,99 @@
     }, { threshold: 0.5 });
     nums.forEach(function (el) { statIO.observe(el); });
   }
+
+  // ---- floating demo chatbot (injected on every page) ----
+  (function () {
+    if (document.querySelector('.chatbot')) return;
+    var cb = document.createElement('div');
+    cb.className = 'chatbot';
+    cb.innerHTML =
+      '<div class="chat-panel" role="dialog" aria-label="Conference assistant" aria-hidden="true">' +
+        '<div class="chat-head">' +
+          '<span class="avatar">TRE</span>' +
+          '<div><div class="ch-title">Conference assistant</div><div class="ch-sub">Typically replies instantly</div></div>' +
+          '<button class="ch-close" type="button" aria-label="Close chat">&times;</button>' +
+        '</div>' +
+        '<div class="chat-body" id="chat-body"></div>' +
+        '<div class="chat-chips" id="chat-chips"></div>' +
+        '<form class="chat-input" id="chat-form">' +
+          '<input type="text" id="chat-text" placeholder="Ask about tickets, dates, visas…" autocomplete="off" aria-label="Your message">' +
+          '<button type="submit" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-3-7-7-1z"/></svg></button>' +
+        '</form>' +
+      '</div>' +
+      '<button class="chat-fab" type="button" aria-label="Open chat" aria-expanded="false">' +
+        '<span class="badge">1</span>' +
+        '<svg class="ic-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.5L3 21l2-5.6A8.5 8.5 0 1 1 21 11.5z"/></svg>' +
+        '<svg class="ic-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>' +
+      '</button>';
+    document.body.appendChild(cb);
+
+    var fab = cb.querySelector('.chat-fab');
+    var panel = cb.querySelector('.chat-panel');
+    var msgs = cb.querySelector('#chat-body');
+    var chips = cb.querySelector('#chat-chips');
+    var cform = cb.querySelector('#chat-form');
+    var input = cb.querySelector('#chat-text');
+    var greeted = false;
+
+    var QUICK = [
+      { label: '🎟 Tickets & prices', q: 'tickets' },
+      { label: '📅 Dates', q: 'when are the dates' },
+      { label: '🌏 Online or in person?', q: 'online or in person' },
+      { label: '🛂 Visa', q: 'visa' },
+      { label: '🎤 Speakers', q: 'speakers' }
+    ];
+    var ANSWERS = [
+      { k: /ticket|price|cost|pay|wave|how much/i, a: 'Tickets are released in rising-price waves — the earliest buyers pay the least. <b>In person</b> starts at $300 and <b>online</b> from $120. See the full breakdown on the <a href="index.html#tickets">Tickets section</a>.' },
+      { k: /online|in.?person|virtual|stream|remote|attend/i, a: 'You can join <b>in person in Bali</b> (full 3.5 days + hands-on workshops) or <b>online by live-stream</b> (keynotes & panels + recordings). Choose your mode on the <a href="index.html#tickets">Tickets</a> toggle.' },
+      { k: /date|when|schedul|programme|program/i, a: 'The conference runs <b>12–15 November 2027</b> — a 3.5-day gathering in Bali. The day-by-day flow is on the <a href="info.html#programme">Info page</a>.' },
+      { k: /visa|invitation|letter|passport/i, a: 'Many visitors enter Indonesia visa-free or on arrival. When you register we ask if you need a visa, and TRE Indonesia can issue an official <b>invitation letter</b>. More on the <a href="info.html#visa">Info page</a>.' },
+      { k: /where|location|venue|bali|hotel|stay|travel|airport|fly/i, a: 'It’s in <b>Bali, Indonesia</b> — fly into Denpasar (DPS). The exact venue and a recommended hotel list are shared when you book. See <a href="info.html#hotels">travel & stay</a>.' },
+      { k: /speaker|facilitator|workshop|host|who/i, a: 'Hosts, facilitators, workshop leads and guest speakers are listed on the <a href="speakers.html">Speakers page</a>, with more announced as the programme is confirmed.' },
+      { k: /register|book|sign|reserve|join|buy/i, a: 'Reserve your place on the <a href="index.html#register">registration form</a> — pick in-person or online, choose your wave, and you’re set.' },
+      { k: /refund|cancel|transfer/i, a: 'Refund and transfer terms are in our <a href="terms.html">Terms & Conditions</a> (draft) — final terms are confirmed at launch.' },
+      { k: /hello|hi|hey|good (morning|afternoon|evening)/i, a: 'Hi there! 👋 I can help with tickets, dates, online vs in-person, visas, location and speakers. What would you like to know?' },
+      { k: /thank|thanks|cheers/i, a: 'You’re welcome! Anything else I can help with?' }
+    ];
+
+    function addMsg(html, who) {
+      var m = document.createElement('div');
+      m.className = 'msg ' + who;
+      m.innerHTML = html;
+      msgs.appendChild(m);
+      msgs.scrollTop = msgs.scrollHeight;
+    }
+    function reply(text) {
+      var ans = null, i;
+      for (i = 0; i < ANSWERS.length; i++) { if (ANSWERS[i].k.test(text)) { ans = ANSWERS[i].a; break; } }
+      if (!ans) ans = 'I’m a demo assistant for the TRE Worldwide Conference. Try asking about <b>tickets</b>, <b>dates</b>, <b>online vs in-person</b>, <b>visas</b>, <b>location</b> or <b>speakers</b> — or email <a href="mailto:hello@technext.asia">hello@technext.asia</a>.';
+      setTimeout(function () { addMsg(ans, 'bot'); }, 420);
+    }
+    function greet() {
+      if (greeted) return;
+      greeted = true;
+      addMsg('Welcome to the <b>TRE Worldwide Conference</b> 🌴 I’m here to help — tap a topic below or type your question. <i>(demo assistant)</i>', 'bot');
+    }
+    QUICK.forEach(function (q) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = q.label;
+      b.addEventListener('click', function () { addMsg(q.label.replace(/^\S+\s/, ''), 'user'); reply(q.q); });
+      chips.appendChild(b);
+    });
+
+    function openChat() { cb.classList.add('open'); fab.setAttribute('aria-expanded', 'true'); panel.setAttribute('aria-hidden', 'false'); greet(); setTimeout(function () { input.focus(); }, 280); }
+    function closeChat() { cb.classList.remove('open'); fab.setAttribute('aria-expanded', 'false'); panel.setAttribute('aria-hidden', 'true'); }
+    fab.addEventListener('click', function () { if (cb.classList.contains('open')) { closeChat(); } else { openChat(); } });
+    cb.querySelector('.ch-close').addEventListener('click', closeChat);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && cb.classList.contains('open')) closeChat(); });
+    cform.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var t = input.value.trim();
+      if (!t) return;
+      addMsg(t.replace(/</g, '&lt;'), 'user');
+      input.value = '';
+      reply(t);
+    });
+  })();
 })();
