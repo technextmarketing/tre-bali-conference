@@ -237,6 +237,27 @@ section{padding:clamp(60px,7.5vw,104px) 0;}
 .socials a:hover{background:var(--teal);color:#fff;transform:translateY(-2px);}
 .socials svg{width:18px;height:18px;}
 
+/* ---------- speakers directory (roles, legend, compact rhythm) ---------- */
+.section--tight{padding:clamp(34px,4.2vw,58px) 0;}
+.page-hero.tight{padding:104px 0 48px;}
+.section-head.snug{margin-bottom:26px;}
+/* role legend under the hero */
+.role-legend{display:flex;flex-wrap:wrap;gap:10px 20px;justify-content:center;margin-top:20px;}
+.role-legend .rl{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.82);}
+.role-legend .dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto;}
+/* colour-coded role tags on cards */
+.s-role .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px;vertical-align:1px;}
+.s-role.role-host{color:var(--teal-2);}
+.s-role.role-facilitator{color:var(--amber-d);}
+.s-role.role-workshop{color:var(--teal-3);}
+.s-role.role-speaker{color:var(--coral);}
+/* count chip next to a group heading */
+.count-chip{display:inline-block;margin-left:10px;font-family:var(--body);font-style:normal;font-weight:600;font-size:13px;color:var(--ink-soft);background:var(--sand-2);border-radius:999px;padding:3px 11px;vertical-align:middle;}
+/* announce-soon cards read a touch quieter */
+.speaker.tba .s-body{opacity:.96;}
+.speaker.tba h3{color:var(--teal-2);}
+.tba-tag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--amber-d);background:#fff6e9;border:1px solid #f0dcbc;border-radius:999px;padding:3px 10px;margin-top:12px;}
+
 /* ---------- schedule ---------- */
 .sched{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
 .day{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:22px 20px;box-shadow:var(--shadow-sm);}
