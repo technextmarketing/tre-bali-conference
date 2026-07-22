@@ -96,6 +96,15 @@
     refreshTiers();
   }
 
+  // ---- pick a tier from the ticket cards -> select the form radio ----
+  document.querySelectorAll('.pick-tier').forEach(function (el) {
+    el.addEventListener('click', function () {
+      var t = el.getAttribute('data-tier');
+      var r = document.querySelector('input[name="tier"][value="' + t + '"]');
+      if (r) { r.checked = true; refreshTiers(); }
+    });
+  });
+
   // ---- get-ticket: visa conditional note ----
   var visaSel = document.getElementById('visa');
   var visaNote = document.getElementById('visa-note');
