@@ -70,10 +70,16 @@
   <div class="wrap">
     <div class="section-head center">
       <span class="kicker">Tickets</span>
-      <h2>Get your tickets — prices rise each wave</h2>
-      <p class="lead">One ticket, full access to all 3.5 days. The earliest buyers pay the least — as each wave sells out, the price steps up toward the event.</p>
+      <h2>Choose how you'll join — in person or online</h2>
+      <p class="lead">Attend live in Bali for the full 3.5-day experience, or join online by live-stream from anywhere. Either way the earliest buyers pay the least — prices rise as each wave sells out.</p>
     </div>
-    <div class="tiers">
+    <div class="attend-wrap">
+      <div class="attend-toggle" role="tablist" aria-label="Attendance type">
+        <button type="button" class="at-opt is-on" data-attend="inperson" aria-selected="true"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.4 7-11a7 7 0 1 0-14 0c0 4.6 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>In person · Bali</button>
+        <button type="button" class="at-opt" data-attend="online" aria-selected="false"><svg viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="12" rx="2"/><path d="M8 20h8M12 16.5V20"/></svg>Online · Live-stream</button>
+      </div>
+    </div>
+    <div class="tiers" data-tiers="inperson">
       <div class="tier">
         <span class="t-tag">Early Bird</span>
         <div class="t-name">Wave 1</div>
@@ -82,7 +88,7 @@
         <div class="progress"><span style="width:76%"></span></div>
         <div class="stock">12 of 50 left</div>
         <ul><li>Full 3.5-day access</li><li>All keynotes &amp; workshops</li><li>Welcome &amp; closing circles</li></ul>
-        <a class="btn btn-outline pick-tier" data-tier="early" href="#register">Choose Early Bird</a>
+        <a class="btn btn-outline pick-tier" data-tier="early" data-attend="inperson" href="#register">Choose Early Bird</a>
       </div>
       <div class="tier tier--featured">
         <span class="badge-featured">Most popular</span>
@@ -93,7 +99,7 @@
         <div class="progress"><span style="width:0%"></span></div>
         <div class="stock">Opens when Wave 1 sells out</div>
         <ul><li>Full 3.5-day access</li><li>All keynotes &amp; workshops</li><li>Priority workshop booking</li></ul>
-        <a class="btn btn-amber pick-tier" data-tier="wave2" href="#register">Choose Wave 2</a>
+        <a class="btn btn-amber pick-tier" data-tier="wave2" data-attend="inperson" href="#register">Choose Wave 2</a>
       </div>
       <div class="tier">
         <span class="t-tag">Standard</span>
@@ -103,10 +109,48 @@
         <div class="progress"><span style="width:0%"></span></div>
         <div class="stock">160 tickets total</div>
         <ul><li>Full 3.5-day access</li><li>All keynotes &amp; workshops</li><li>Standard entry</li></ul>
-        <a class="btn btn-outline pick-tier" data-tier="standard" href="#register">Choose Standard</a>
+        <a class="btn btn-outline pick-tier" data-tier="standard" data-attend="inperson" href="#register">Choose Standard</a>
       </div>
     </div>
-    <div class="note center" style="margin-top:30px;"><b>How the waves work:</b> tickets are released in waves. Once a wave sells out, the next opens at a higher price. Everyone gets the same full-conference access — early buyers simply pay less.</div>
+
+    <div class="tiers" data-tiers="online" hidden>
+      <div class="tier tier--online">
+        <span class="t-mode">Online</span>
+        <span class="t-tag">Early Bird</span>
+        <div class="t-name">Wave 1</div>
+        <div class="t-price">$120 <small>USD</small></div>
+        <div class="t-note">Lowest price · first 100 passes</div>
+        <div class="progress"><span style="width:64%"></span></div>
+        <div class="stock">36 of 100 left</div>
+        <ul><li>Live-stream of all keynotes &amp; panels</li><li>Session recordings (30 days)</li><li>Digital workbook &amp; online community</li></ul>
+        <a class="btn btn-outline pick-tier" data-tier="online-early" data-attend="online" href="#register">Choose Early Bird</a>
+      </div>
+      <div class="tier tier--online tier--featured">
+        <span class="badge-featured">Best value</span>
+        <span class="t-mode">Online</span>
+        <span class="t-tag">Wave 2</span>
+        <div class="t-name">Standard</div>
+        <div class="t-price">$150 <small>USD</small></div>
+        <div class="t-note">Price rises · next 100 passes</div>
+        <div class="progress"><span style="width:0%"></span></div>
+        <div class="stock">Opens when Wave 1 sells out</div>
+        <ul><li>Live-stream of all keynotes &amp; panels</li><li>Session recordings (60 days)</li><li>Digital workbook &amp; online community</li></ul>
+        <a class="btn btn-amber pick-tier" data-tier="online-wave2" data-attend="online" href="#register">Choose Wave 2</a>
+      </div>
+      <div class="tier tier--online">
+        <span class="t-mode">Online</span>
+        <span class="t-tag">Standard</span>
+        <div class="t-name">Wave 3</div>
+        <div class="t-price">$180 <small>USD</small></div>
+        <div class="t-note">Highest price · remaining passes</div>
+        <div class="progress"><span style="width:0%"></span></div>
+        <div class="stock">Unlimited online places</div>
+        <ul><li>Live-stream of all keynotes &amp; panels</li><li>Session recordings (60 days)</li><li>Digital workbook &amp; online community</li></ul>
+        <a class="btn btn-outline pick-tier" data-tier="online-standard" data-attend="online" href="#register">Choose Standard</a>
+      </div>
+    </div>
+
+    <div class="note center" style="margin-top:30px;"><b>In person vs online:</b> in-person tickets include all hands-on workshops, practice sessions and community events in Bali. Online passes live-stream the keynotes and panels with session recordings — the workshops are in-person only. Prices rise wave by wave for both.</div>
     <p class="center muted" style="margin-top:16px;font-size:13.5px;">Indicative pricing shown · final tiers &amp; prices confirmed at launch. Payments handled securely by Stripe in USD.</p>
   </div>
 </section>
@@ -127,13 +171,26 @@
 
     <div class="form-grid">
       <form id="ticket-form" novalidate>
-        <h3 style="margin-bottom:12px;">Choose your ticket</h3>
-        <div class="radio-tiers">
-          <label class="radio-tier"><input type="radio" name="tier" value="early" data-name="Early Bird · Wave 1" data-price="$300 USD"><span class="rt-name">Early Bird · Wave 1</span><span class="rt-price">$300</span></label>
-          <label class="radio-tier"><input type="radio" name="tier" value="wave2" data-name="Wave 2 · Standard" data-price="$400 USD"><span class="rt-name">Wave 2 · Standard</span><span class="rt-price">$400</span></label>
-          <label class="radio-tier"><input type="radio" name="tier" value="standard" data-name="Wave 3 · Standard" data-price="$500 USD"><span class="rt-name">Wave 3 · Standard</span><span class="rt-price">$500</span></label>
+        <h3 style="margin-bottom:12px;">How will you attend?</h3>
+        <div class="attend-wrap" style="justify-content:flex-start;margin-bottom:20px;">
+          <div class="attend-toggle" role="tablist" aria-label="Attendance type">
+            <button type="button" class="at-opt is-on" data-attend="inperson"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.4 7-11a7 7 0 1 0-14 0c0 4.6 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>In person · Bali</button>
+            <button type="button" class="at-opt" data-attend="online"><svg viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="12" rx="2"/><path d="M8 20h8M12 16.5V20"/></svg>Online · Live-stream</button>
+          </div>
         </div>
-        <p class="muted" style="font-size:13px;margin-bottom:22px;">Indicative pricing · final prices confirmed at launch.</p>
+
+        <h3 style="margin-bottom:12px;">Choose your ticket</h3>
+        <div class="radio-tiers" data-attend-group="inperson">
+          <label class="radio-tier"><input type="radio" name="tier" value="early" data-name="In person · Early Bird (Wave 1)" data-price="$300 USD"><span class="rt-name">Early Bird · Wave 1</span><span class="rt-price">$300</span></label>
+          <label class="radio-tier"><input type="radio" name="tier" value="wave2" data-name="In person · Standard (Wave 2)" data-price="$400 USD"><span class="rt-name">Wave 2 · Standard</span><span class="rt-price">$400</span></label>
+          <label class="radio-tier"><input type="radio" name="tier" value="standard" data-name="In person · Standard (Wave 3)" data-price="$500 USD"><span class="rt-name">Wave 3 · Standard</span><span class="rt-price">$500</span></label>
+        </div>
+        <div class="radio-tiers" data-attend-group="online" hidden>
+          <label class="radio-tier"><input type="radio" name="tier" value="online-early" data-name="Online · Early Bird (Wave 1)" data-price="$120 USD" disabled><span class="rt-name">Early Bird · Wave 1</span><span class="rt-price">$120</span></label>
+          <label class="radio-tier"><input type="radio" name="tier" value="online-wave2" data-name="Online · Standard (Wave 2)" data-price="$150 USD" disabled><span class="rt-name">Wave 2 · Standard</span><span class="rt-price">$150</span></label>
+          <label class="radio-tier"><input type="radio" name="tier" value="online-standard" data-name="Online · Standard (Wave 3)" data-price="$180 USD" disabled><span class="rt-name">Wave 3 · Standard</span><span class="rt-price">$180</span></label>
+        </div>
+        <p class="muted" style="font-size:13px;margin-bottom:22px;">Indicative pricing · final prices confirmed at launch. Online passes live-stream the keynotes &amp; panels; hands-on workshops are in-person only.</p>
 
         <div class="field-row">
           <div class="field"><label for="fname">First name *</label><input id="fname" name="fname" type="text" required></div>
@@ -175,9 +232,10 @@
 
       <aside class="summary">
         <h3>Order summary</h3>
+        <div class="row"><span>Attendance</span><b id="sum-attend">In person · Bali</b></div>
         <div class="row"><span>Ticket</span><b id="sum-tier">Early Bird · Wave 1</b></div>
         <div class="row"><span>Event</span><b>Bali · 12–15 Nov 2027</b></div>
-        <div class="row"><span>Access</span><b>Full 3.5 days</b></div>
+        <div class="row"><span>Access</span><b id="sum-access">Full 3.5 days</b></div>
         <div class="total"><span>Per ticket</span><span id="sum-price">$300 USD</span></div>
         <div class="countdown countdown--light" data-countdown style="margin-top:22px;gap:8px;">
           <div class="cd-box"><div class="n" data-cd="days">—</div><div class="l">Days</div></div>

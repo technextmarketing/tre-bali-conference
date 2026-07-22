@@ -135,7 +135,7 @@ section{padding:clamp(60px,7.5vw,104px) 0;}
 
 /* ---------- hero ---------- */
 .hero{
-  position:relative;min-height:90vh;display:flex;align-items:center;
+  position:relative;min-height:100vh;min-height:100dvh;display:flex;align-items:center;
   color:#fff;overflow:hidden;padding:120px 0 70px;
 }
 .hero::before{
@@ -219,6 +219,18 @@ section{padding:clamp(60px,7.5vw,104px) 0;}
 .progress{height:8px;border-radius:6px;background:var(--sand-2);overflow:hidden;margin:4px 0 8px;}
 .progress > span{display:block;height:100%;background:var(--amber);border-radius:6px;}
 .stock{font-size:12.5px;color:var(--ink-soft);margin-bottom:16px;}
+
+/* ---------- attendance toggle (in-person vs online) ---------- */
+.attend-wrap{display:flex;justify-content:center;margin-bottom:30px;}
+.attend-toggle{display:inline-flex;background:var(--sand-2);border:1px solid var(--line);border-radius:999px;padding:5px;gap:4px;}
+.attend-toggle .at-opt{display:inline-flex;align-items:center;gap:8px;border:0;background:transparent;font-family:var(--body);font-weight:600;font-size:14.5px;color:var(--ink-soft);padding:10px 22px;border-radius:999px;cursor:pointer;transition:background .2s,color .2s,box-shadow .2s;white-space:nowrap;}
+.attend-toggle .at-opt svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.attend-toggle .at-opt.is-on{background:#fff;color:var(--teal);box-shadow:var(--shadow-sm);}
+.attend-toggle .at-opt:hover:not(.is-on){color:var(--teal-2);}
+/* .tiers/.radio-tiers set display:grid, which beats the [hidden] UA rule — force it */
+.tiers[hidden],.radio-tiers[hidden]{display:none;}
+.t-mode{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--teal-2);background:rgba(18,100,94,.09);border-radius:999px;padding:4px 11px;margin-bottom:12px;}
+.tier--online .t-mode{color:var(--amber-d);background:rgba(224,164,88,.14);}
 
 /* ---------- speakers ---------- */
 .speaker{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);transition:transform .2s,box-shadow .2s;}
@@ -464,7 +476,7 @@ section{padding:clamp(60px,7.5vw,104px) 0;}
   .grid-3,.grid-2{grid-template-columns:1fr;}
   .split{grid-template-columns:1fr;}
   .split .split-media{order:-1;}
-  .hero{min-height:auto;padding:110px 0 64px;}
+  .hero{min-height:100dvh;padding:100px 0 56px;}
 }
 @media(max-width:560px){
   .grid-4{grid-template-columns:1fr;}

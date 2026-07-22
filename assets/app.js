@@ -106,10 +106,11 @@
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
   }
 
-  // ---- get-ticket: preselect tier from ?tier= ----
+  // ---- attendance (in-person vs online) + tier selection ----
   var params = new URLSearchParams(window.location.search);
   var pretier = params.get('tier');
   var radios = document.querySelectorAll('input[name="tier"]');
+
   function refreshTiers() {
     document.querySelectorAll('.radio-tier').forEach(function (rt) {
       var r = rt.querySelector('input');
@@ -121,18 +122,60 @@
     if (sel && sumTier) sumTier.textContent = sel.getAttribute('data-name');
     if (sel && sumPrice) sumPrice.textContent = sel.getAttribute('data-price');
   }
-  if (radios.length) {
-    radios.forEach(function (r) {
-      r.addEventListener('change', refreshTiers);
-      if (pretier && r.value === pretier) r.checked = true;
+
+  function setAttend(mode) {
+    // sync every toggle on the page (tickets section + form)
+    document.querySelectorAll('.at-opt').forEach(function (b) {
+      var on = b.getAttribute('data-attend') === mode;
+      b.classList.toggle('is-on', on);
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
     });
-    if (!document.querySelector('input[name="tier"]:checked')) radios[0].checked = true;
+    // ticket card groups
+    document.querySelectorAll('[data-tiers]').forEach(function (g) {
+      g.hidden = g.getAttribute('data-tiers') !== mode;
+    });
+    // form radio groups — enable only the active group so hidden radios don't submit
+    document.querySelectorAll('[data-attend-group]').forEach(function (g) {
+      var on = g.getAttribute('data-attend-group') === mode;
+      g.hidden = !on;
+      g.querySelectorAll('input[name="tier"]').forEach(function (r) { r.disabled = !on; });
+    });
+    // ensure a radio is selected in the active group
+    var active = document.querySelector('[data-attend-group="' + mode + '"]');
+    if (active && !active.querySelector('input[name="tier"]:checked')) {
+      var first = active.querySelector('input[name="tier"]');
+      if (first) first.checked = true;
+    }
+    // summary labels
+    var sumAttend = document.getElementById('sum-attend');
+    if (sumAttend) sumAttend.textContent = mode === 'online' ? 'Online · Live-stream' : 'In person · Bali';
+    var sumAccess = document.getElementById('sum-access');
+    if (sumAccess) sumAccess.textContent = mode === 'online' ? 'Live-stream + recordings' : 'Full 3.5 days';
     refreshTiers();
   }
 
-  // ---- pick a tier from the ticket cards -> select the form radio ----
+  document.querySelectorAll('.at-opt').forEach(function (b) {
+    b.addEventListener('click', function () { setAttend(b.getAttribute('data-attend')); });
+  });
+
+  if (radios.length) {
+    radios.forEach(function (r) { r.addEventListener('change', refreshTiers); });
+    // preselect from ?tier= (picks the right mode), else default to in-person
+    var pre = pretier ? document.querySelector('input[name="tier"][value="' + pretier + '"]') : null;
+    if (pre) {
+      var grp = pre.closest('[data-attend-group]');
+      setAttend(grp && grp.getAttribute('data-attend-group') === 'online' ? 'online' : 'inperson');
+      pre.checked = true;
+      refreshTiers();
+    } else {
+      setAttend('inperson');
+    }
+  }
+
+  // ---- pick a tier from the ticket cards -> switch mode + select the form radio ----
   document.querySelectorAll('.pick-tier').forEach(function (el) {
     el.addEventListener('click', function () {
+      setAttend(el.getAttribute('data-attend') || 'inperson');
       var t = el.getAttribute('data-tier');
       var r = document.querySelector('input[name="tier"][value="' + t + '"]');
       if (r) { r.checked = true; refreshTiers(); }
