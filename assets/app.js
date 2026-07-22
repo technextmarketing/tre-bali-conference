@@ -21,6 +21,17 @@
     });
   }
 
+  // ---- transparent header -> solid on scroll ----
+  var header = document.querySelector('.site-header');
+  if (header) {
+    var setHeader = function () {
+      header.classList.toggle('scrolled', (window.scrollY || window.pageYOffset) > 24);
+    };
+    setHeader();
+    window.addEventListener('scroll', setHeader, { passive: true });
+    window.addEventListener('resize', setHeader, { passive: true });
+  }
+
   // ---- countdown ----
   // Event opens: 12 November 2027, 09:00 Bali time (WITA, UTC+8)
   var TARGET = new Date('2027-11-12T09:00:00+08:00').getTime();
@@ -146,5 +157,35 @@
       form.style.display = 'none';
       if (ok) { ok.classList.add('show'); ok.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
     });
+  }
+
+  // ---- stat count-up (animates the big numbers into view) ----
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var nums = document.querySelectorAll('.stat .num');
+  if (nums.length && !reduceMotion && 'IntersectionObserver' in window) {
+    var countUp = function (el) {
+      var small = el.querySelector('small');
+      var suffix = small ? small.outerHTML : '';
+      var raw = (small ? el.textContent.replace(small.textContent, '') : el.textContent).trim();
+      var target = parseFloat(raw);
+      if (isNaN(target)) return;
+      var decimals = raw.indexOf('.') > -1 ? (raw.split('.')[1] || '').length : 0;
+      var dur = 1400, startTs = null;
+      var step = function (ts) {
+        if (startTs === null) startTs = ts;
+        var p = Math.min((ts - startTs) / dur, 1);
+        var eased = 1 - Math.pow(1 - p, 3);
+        el.innerHTML = (target * eased).toFixed(decimals) + suffix;
+        if (p < 1) { requestAnimationFrame(step); }
+        else { el.innerHTML = raw + suffix; }
+      };
+      requestAnimationFrame(step);
+    };
+    var statIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { countUp(e.target); statIO.unobserve(e.target); }
+      });
+    }, { threshold: 0.5 });
+    nums.forEach(function (el) { statIO.observe(el); });
   }
 })();
