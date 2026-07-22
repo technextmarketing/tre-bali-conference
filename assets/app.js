@@ -2,6 +2,8 @@
 (function () {
   'use strict';
 
+  document.documentElement.classList.add('js');
+
   // ---- footer year ----
   var y = document.getElementById('year');
   if (y) y.textContent = new Date().getFullYear();
@@ -36,20 +38,33 @@
     boxes.forEach(function (root) {
       Object.keys(map).forEach(function (k) {
         var el = root.querySelector('[data-cd="' + k + '"]');
-        if (el) el.textContent = map[k];
+        if (el && el.textContent !== String(map[k])) {
+          el.textContent = map[k];
+          el.classList.remove('tick');
+          void el.offsetWidth; // reflow to restart the pop animation
+          el.classList.add('tick');
+        }
       });
     });
   }
   if (boxes.length) { tick(); setInterval(tick, 1000); }
 
-  // ---- reveal on scroll ----
+  // ---- reveal on scroll (auto-applied site-wide + staggered) ----
+  var revealSel = '.reveal, .card, .tier, .speaker, .day, .stat, .fact, .gallery figure, .split-media, .note, .section-head';
+  document.querySelectorAll(revealSel).forEach(function (el) { el.classList.add('reveal'); });
   var reveals = document.querySelectorAll('.reveal');
+  reveals.forEach(function (el) {
+    if (!el.parentElement) return;
+    var sibs = Array.prototype.filter.call(el.parentElement.children, function (c) { return c.classList.contains('reveal'); });
+    var idx = sibs.indexOf(el);
+    if (idx > 0) el.style.transitionDelay = Math.min(idx, 6) * 70 + 'ms';
+  });
   if ('IntersectionObserver' in window && reveals.length) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
       });
-    }, { threshold: 0.12 });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
     reveals.forEach(function (el) { io.observe(el); });
   } else {
     reveals.forEach(function (el) { el.classList.add('in'); });
