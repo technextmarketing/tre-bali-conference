@@ -441,23 +441,16 @@ section{padding:clamp(60px,7.5vw,104px) 0;}
 .cd-box .n{display:inline-block;}
 .cd-box .n.tick{animation:cdPop .5s cubic-bezier(.2,.8,.3,1);}
 
-/* ---------- reflective animated headings (light sweep, NOT a glow) ---------- */
-:root{--sheen:#83B7A9;}                                        /* light reflection band for dark teal headings */
-.hero,.page-hero,.section--dark,.cta-band{--sheen:#F4D9A6;}    /* warm glint for white headings on dark bg */
-@keyframes sheenSweep{0%{background-position:160% 0;}100%{background-position:-60% 0;}}
-@supports ((-webkit-background-clip:text) or (background-clip:text)){
-  h1,h2{
-    background-image:linear-gradient(100deg,currentColor 41%,var(--sheen) 50%,currentColor 59%);
-    background-size:260% 100%;background-position:160% 0;background-repeat:no-repeat;
-    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
-    animation:sheenSweep 7s linear infinite;
-  }
-  h2{animation-duration:8s;}
-  /* interactive: hovering a heading speeds the reflection sweep (hero h1 keeps its combined entrance) */
-  h2:hover,.page-hero h1:hover{animation-duration:1.4s;cursor:default;}
-  .hero h1{animation:heroIn .8s .15s both, sheenSweep 7.5s 1.2s linear infinite;}
-  /* keep inline chips readable inside a clipped heading */
-  h1 .count-chip,h2 .count-chip{-webkit-text-fill-color:var(--ink-soft);}
+/* ---------- heading reflection (real mirror reflection — text stays solid) ---------- */
+/* Progressive enhancement: Chromium/Safari render a faded mirror strip beneath the heading.
+   Text is fully opaque (no clip, no fade) so nothing disappears. Firefox shows solid text.
+   Fade uses FIXED px (not %) so the reflection is a short strip regardless of heading height,
+   and matching margins keep it clear of the content below. */
+@supports (-webkit-box-reflect:below){
+  h1,h2{-webkit-box-reflect:below 2px linear-gradient(rgba(0,0,0,.30) 0, rgba(0,0,0,.07) 8px, transparent 18px);}
+  h1{margin-bottom:24px;}
+  h2{margin-bottom:20px;}
+  .hero h1{margin-bottom:24px;}   /* override .hero h1{margin:0 auto} so the reflection has room */
 }
 
 /* ---------- floating chatbot (demo assistant) ---------- */
