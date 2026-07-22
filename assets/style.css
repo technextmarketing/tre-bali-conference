@@ -312,6 +312,22 @@ section{padding:clamp(60px,7.5vw,104px) 0;}
 .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease;}
 .reveal.in{opacity:1;transform:none;}
 
+/* ---------- quick facts strip ---------- */
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;}
+.fact{display:flex;gap:13px;align-items:center;}
+.fact .fi{width:46px;height:46px;border-radius:50%;background:var(--sand-2);display:grid;place-items:center;font-size:20px;flex:0 0 auto;}
+.fact .fl{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);}
+.fact .fv{font-family:var(--head);font-weight:600;color:var(--teal);font-size:16px;line-height:1.15;}
+
+/* ---------- stats ---------- */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;text-align:center;}
+.stat .num{font-family:var(--head);font-weight:600;font-size:clamp(40px,5vw,60px);color:var(--teal);line-height:1;}
+.stat .num small{font-size:.5em;color:var(--amber-d);}
+.stat .lbl{font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-top:12px;}
+
+/* hairline divider for all-white pages */
+.divide{border-top:1px solid var(--line);}
+
 /* ---------- responsive ---------- */
 @media(max-width:960px){
   .grid-4{grid-template-columns:repeat(2,1fr);}
@@ -319,6 +335,8 @@ section{padding:clamp(60px,7.5vw,104px) 0;}
   .gallery{columns:2;}
   .form-grid{grid-template-columns:1fr;}
   .summary{position:static;}
+  .stats{grid-template-columns:repeat(2,1fr);gap:36px 24px;}
+  .facts{grid-template-columns:repeat(2,1fr);}
 }
 @media(max-width:820px){
   .nav-toggle{display:flex;}
@@ -341,6 +359,7 @@ section{padding:clamp(60px,7.5vw,104px) 0;}
   .grid-4{grid-template-columns:1fr;}
   .sched{grid-template-columns:1fr;}
   .gallery{columns:1;}
+  .facts{grid-template-columns:1fr;}
   .footer-grid{grid-template-columns:1fr 1fr;}
   .cd-box{min-width:0;flex:1;padding:12px 4px;}
   .countdown{gap:8px;}
