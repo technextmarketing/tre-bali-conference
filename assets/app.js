@@ -69,6 +69,14 @@
   } else {
     reveals.forEach(function (el) { el.classList.add('in'); });
   }
+  // safety net: never leave in-view content hidden if the observer is delayed
+  setTimeout(function () {
+    reveals.forEach(function (el) {
+      if (el.classList.contains('in')) return;
+      var r = el.getBoundingClientRect();
+      if (r.top < (window.innerHeight || 800) && r.bottom > 0) el.classList.add('in');
+    });
+  }, 2200);
 
   // ---- gallery lightbox ----
   var lb = document.getElementById('lightbox');
