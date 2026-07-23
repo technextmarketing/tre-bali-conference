@@ -524,15 +524,17 @@ section{padding:clamp(60px,7.5vw,104px) 0;}
   .nav-toggle[aria-expanded="true"] span:nth-child(2){opacity:0;}
   .nav-toggle[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
   /* glassy see-through dropdown — matches the transparent header */
+  /* floating glass card that drops from under the hamburger */
   .site-nav{
-    display:flex;position:fixed;inset:0 0 auto 0;flex-direction:column;align-items:stretch;gap:4px;
-    padding:86px 20px 26px;
-    background:rgba(15,61,62,.42);backdrop-filter:blur(20px) saturate(1.15);-webkit-backdrop-filter:blur(20px) saturate(1.15);
-    border-bottom:1px solid rgba(255,255,255,.18);
-    transform:translateY(-112%);transition:transform .42s cubic-bezier(.3,.8,.25,1),background .32s ease;
-    box-shadow:0 28px 56px rgba(15,61,62,.32);z-index:55;
+    display:flex;position:fixed;top:70px;left:14px;right:14px;flex-direction:column;align-items:stretch;gap:4px;
+    padding:14px;
+    background:rgba(15,61,62,.5);backdrop-filter:blur(22px) saturate(1.2);-webkit-backdrop-filter:blur(22px) saturate(1.2);
+    border:1px solid rgba(255,255,255,.2);border-radius:20px;
+    box-shadow:0 24px 54px rgba(15,61,62,.38);
+    transform-origin:top right;opacity:0;transform:translateY(-10px) scale(.96);pointer-events:none;
+    transition:opacity .26s ease,transform .34s cubic-bezier(.3,.9,.3,1),background .32s ease;z-index:55;
   }
-  .site-nav.open{transform:translateY(0);}
+  .site-nav.open{opacity:1;transform:none;pointer-events:auto;}
   .nav-links{display:flex;flex-direction:column;align-items:stretch;gap:4px;justify-self:auto;}
   .site-header .site-nav a:not(.btn){
     color:#fff;font-family:var(--head);font-style:italic;font-size:20px;padding:14px 16px;border-radius:12px;
@@ -543,7 +545,7 @@ section{padding:clamp(60px,7.5vw,104px) 0;}
   .site-nav a:not(.btn)::after{display:none;}
   .nav-cta{margin:14px 0 4px;text-align:center;justify-self:auto;padding:16px 22px;font-size:16px;}
   /* once scrolled past the hero, the glass turns light and links go dark */
-  .site-header.scrolled .site-nav{background:rgba(251,247,240,.82);border-bottom-color:var(--line);box-shadow:0 28px 56px rgba(15,61,62,.16);}
+  .site-header.scrolled .site-nav{background:rgba(251,247,240,.9);border-color:var(--line);box-shadow:0 24px 54px rgba(15,61,62,.2);}
   .site-header.scrolled .site-nav a:not(.btn){color:var(--ink);}
   .site-header.scrolled .site-nav a:not(.btn):hover,
   .site-header.scrolled .site-nav a.is-active:not(.btn){color:var(--teal-2);background:rgba(15,61,62,.06);}
@@ -565,28 +567,8 @@ section{padding:clamp(60px,7.5vw,104px) 0;}
   .hero-btns .btn{flex:1;}
 }
 
-/* ---------- title colour reflection (animated sheen + hover interaction) ---------- */
-@supports ((-webkit-background-clip:text) or (background-clip:text)){
-  @keyframes titleSheen{0%{background-position:210% center;}100%{background-position:-130% center;}}
-  .hero h1,.page-hero h1,.section-head h2{
-    -webkit-background-clip:text;background-clip:text;
-    -webkit-text-fill-color:transparent;color:transparent;
-    background-size:220% auto;background-repeat:no-repeat;
-  }
-  /* on the dark hero: white letters with a warm gold glint sweeping across, continuously */
-  .hero h1,.page-hero h1{
-    background-image:linear-gradient(100deg,#fff 0%,#fff 37%,#ffe7c0 46%,var(--amber) 50%,#ffe7c0 54%,#fff 63%,#fff 100%);
-    background-position:120% center;
-  }
-  .hero h1{animation:heroIn .8s .15s both, titleSheen 6.5s 1.6s linear infinite;}
-  .page-hero h1{animation:titleSheen 6.5s 1.2s linear infinite;}
-  /* on white sections: teal letters that catch an amber reflection on hover */
-  .section-head h2{
-    background-image:linear-gradient(100deg,var(--teal) 0%,var(--teal) 37%,var(--amber) 50%,var(--teal-2) 60%,var(--teal) 100%);
-    background-position:210% center;transition:background-position 1s ease;
-  }
-  .section-head h2:hover{background-position:-130% center;}
-}
+/* titles: solid text with a mirror reflection only (see -webkit-box-reflect block above).
+   No background-clip sheen — the letters stay fully opaque, nothing fades or disappears. */
 
 /* ---------- card interaction: cursor glare + 3D tilt (tilt driven by JS) ---------- */
 .card,.tier{overflow:hidden;}
