@@ -85,10 +85,10 @@ p{color:var(--ink-soft);}
   transition:background .32s ease,border-color .32s ease,box-shadow .32s ease,backdrop-filter .32s ease;
 }
 .site-header.scrolled{
-  background:rgba(251,247,240,.9);
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  border-bottom-color:var(--line);
-  box-shadow:0 6px 22px rgba(15,61,62,.07);
+  background:rgba(251,247,240,.55);
+  backdrop-filter:blur(18px) saturate(1.15);-webkit-backdrop-filter:blur(18px) saturate(1.15);
+  border-bottom-color:rgba(217,207,191,.55);
+  box-shadow:0 6px 22px rgba(15,61,62,.05);
 }
 /* 3-zone grid: brand (left) · nav links (center) · CTA (right) */
 .header-inner{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:72px;gap:20px;}
@@ -518,20 +518,35 @@ section{padding:clamp(60px,7.5vw,104px) 0;}
 }
 @media(max-width:820px){
   .header-inner{display:flex;justify-content:space-between;}
-  .nav-toggle{display:flex;justify-self:auto;}
+  .nav-toggle{display:flex;justify-self:auto;z-index:57;position:relative;}
+  /* hamburger animates into an X while the menu is open */
+  .nav-toggle[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  .nav-toggle[aria-expanded="true"] span:nth-child(2){opacity:0;}
+  .nav-toggle[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+  /* glassy see-through dropdown — matches the transparent header */
   .site-nav{
-    display:flex;position:fixed;inset:72px 0 auto 0;flex-direction:column;align-items:stretch;gap:0;
-    background:var(--paper);border-bottom:1px solid var(--line);padding:10px 24px 22px;
-    transform:translateY(-140%);transition:transform .3s ease;box-shadow:var(--shadow);z-index:55;
+    display:flex;position:fixed;inset:0 0 auto 0;flex-direction:column;align-items:stretch;gap:4px;
+    padding:86px 20px 26px;
+    background:rgba(15,61,62,.42);backdrop-filter:blur(20px) saturate(1.15);-webkit-backdrop-filter:blur(20px) saturate(1.15);
+    border-bottom:1px solid rgba(255,255,255,.18);
+    transform:translateY(-112%);transition:transform .42s cubic-bezier(.3,.8,.25,1),background .32s ease;
+    box-shadow:0 28px 56px rgba(15,61,62,.32);z-index:55;
   }
   .site-nav.open{transform:translateY(0);}
-  .nav-links{display:flex;flex-direction:column;align-items:stretch;gap:0;justify-self:auto;}
-  /* dropdown panel is light — force dark links (base is light for the hero) */
-  .site-header .site-nav a:not(.btn){color:var(--ink);padding:14px 0;border-bottom:1px solid var(--sand-2);font-size:16px;}
+  .nav-links{display:flex;flex-direction:column;align-items:stretch;gap:4px;justify-self:auto;}
+  .site-header .site-nav a:not(.btn){
+    color:#fff;font-family:var(--head);font-style:italic;font-size:20px;padding:14px 16px;border-radius:12px;
+    border-bottom:0;transition:background .2s ease,color .2s ease,padding-left .2s ease;
+  }
   .site-header .site-nav a:not(.btn):hover,
-  .site-header .site-nav a.is-active:not(.btn){color:var(--teal-2);}
-  .site-nav a.is-active:not(.btn)::after{display:none;}
-  .nav-cta{margin:14px 0 0;text-align:center;justify-self:auto;}
+  .site-header .site-nav a.is-active:not(.btn){color:#fff;background:rgba(255,255,255,.14);padding-left:22px;}
+  .site-nav a:not(.btn)::after{display:none;}
+  .nav-cta{margin:14px 0 4px;text-align:center;justify-self:auto;padding:16px 22px;font-size:16px;}
+  /* once scrolled past the hero, the glass turns light and links go dark */
+  .site-header.scrolled .site-nav{background:rgba(251,247,240,.82);border-bottom-color:var(--line);box-shadow:0 28px 56px rgba(15,61,62,.16);}
+  .site-header.scrolled .site-nav a:not(.btn){color:var(--ink);}
+  .site-header.scrolled .site-nav a:not(.btn):hover,
+  .site-header.scrolled .site-nav a.is-active:not(.btn){color:var(--teal-2);background:rgba(15,61,62,.06);}
   .tiers{grid-template-columns:1fr;}
   .grid-3,.grid-2{grid-template-columns:1fr;}
   .split{grid-template-columns:1fr;}
@@ -549,3 +564,43 @@ section{padding:clamp(60px,7.5vw,104px) 0;}
   .field-row{grid-template-columns:1fr;}
   .hero-btns .btn{flex:1;}
 }
+
+/* ---------- title colour reflection (animated sheen + hover interaction) ---------- */
+@supports ((-webkit-background-clip:text) or (background-clip:text)){
+  @keyframes titleSheen{0%{background-position:210% center;}100%{background-position:-130% center;}}
+  .hero h1,.page-hero h1,.section-head h2{
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+    background-size:220% auto;background-repeat:no-repeat;
+  }
+  /* on the dark hero: white letters with a warm gold glint sweeping across, continuously */
+  .hero h1,.page-hero h1{
+    background-image:linear-gradient(100deg,#fff 0%,#fff 37%,#ffe7c0 46%,var(--amber) 50%,#ffe7c0 54%,#fff 63%,#fff 100%);
+    background-position:120% center;
+  }
+  .hero h1{animation:heroIn .8s .15s both, titleSheen 6.5s 1.6s linear infinite;}
+  .page-hero h1{animation:titleSheen 6.5s 1.2s linear infinite;}
+  /* on white sections: teal letters that catch an amber reflection on hover */
+  .section-head h2{
+    background-image:linear-gradient(100deg,var(--teal) 0%,var(--teal) 37%,var(--amber) 50%,var(--teal-2) 60%,var(--teal) 100%);
+    background-position:210% center;transition:background-position 1s ease;
+  }
+  .section-head h2:hover{background-position:-130% center;}
+}
+
+/* ---------- card interaction: cursor glare + 3D tilt (tilt driven by JS) ---------- */
+.card,.tier{overflow:hidden;}
+.card,.tier,.speaker,.day{transform-style:preserve-3d;}
+.card::before,.tier::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;
+  opacity:0;transition:opacity .3s ease;
+  background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%),rgba(224,164,88,.20),transparent 60%);}
+.card:hover::before,.tier:hover::before{opacity:1;}
+.card>*,.tier>*{position:relative;z-index:1;}
+.card:hover{box-shadow:var(--shadow),0 0 0 1px rgba(224,164,88,.35);}
+.tier:hover{box-shadow:var(--shadow),0 0 0 1px rgba(224,164,88,.30);}
+.speaker:hover,.day:hover{box-shadow:var(--shadow),0 0 0 1px rgba(224,164,88,.28);}
+
+/* ---------- order summary feedback ---------- */
+@keyframes sumBump{0%{transform:scale(1);}40%{transform:scale(1.07);}100%{transform:scale(1);}}
+.summary .total #sum-total{display:inline-block;transition:color .2s ease;}
+.summary .total.bump #sum-total{animation:sumBump .4s ease;color:var(--amber-d);}

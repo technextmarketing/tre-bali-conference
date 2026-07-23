@@ -111,16 +111,33 @@
   var pretier = params.get('tier');
   var radios = document.querySelectorAll('input[name="tier"]');
 
+  function money(n) { return '$' + Number(n).toLocaleString('en-US') + ' USD'; }
+  function priceOf(el) { return parseInt(((el && el.getAttribute('data-price')) || '').replace(/[^0-9]/g, ''), 10) || 0; }
   function refreshTiers() {
     document.querySelectorAll('.radio-tier').forEach(function (rt) {
       var r = rt.querySelector('input');
       rt.classList.toggle('sel', r && r.checked);
     });
     var sel = document.querySelector('input[name="tier"]:checked');
+    if (!sel) return;
+    var qtyEl = document.getElementById('qty');
+    var qty = qtyEl ? (parseInt(qtyEl.value, 10) || 1) : 1;
+    var unit = priceOf(sel);
     var sumTier = document.getElementById('sum-tier');
-    var sumPrice = document.getElementById('sum-price');
-    if (sel && sumTier) sumTier.textContent = sel.getAttribute('data-name');
-    if (sel && sumPrice) sumPrice.textContent = sel.getAttribute('data-price');
+    var sumUnit = document.getElementById('sum-unit');
+    var sumQty = document.getElementById('sum-qty');
+    var sumTotal = document.getElementById('sum-total');
+    if (sumTier) sumTier.textContent = sel.getAttribute('data-name');
+    if (sumUnit) sumUnit.textContent = money(unit);
+    if (sumQty) sumQty.textContent = qty + (qty > 1 ? ' tickets' : ' ticket');
+    if (sumTotal) {
+      var next = money(unit * qty);
+      if (sumTotal.textContent !== next) {
+        sumTotal.textContent = next;
+        var box = sumTotal.closest('.total');
+        if (box) { box.classList.remove('bump'); void box.offsetWidth; box.classList.add('bump'); }
+      }
+    }
   }
 
   function setAttend(mode) {
@@ -172,6 +189,10 @@
     }
   }
 
+  // ---- quantity drives the order total (1 ticket = 1 price) ----
+  var qtySel = document.getElementById('qty');
+  if (qtySel) qtySel.addEventListener('change', refreshTiers);
+
   // ---- pick a tier from the ticket cards -> switch mode + select the form radio ----
   document.querySelectorAll('.pick-tier').forEach(function (el) {
     el.addEventListener('click', function () {
@@ -196,6 +217,10 @@
   if (form) {
     form.addEventListener('submit', function (e) {
       e.preventDefault();
+      // enforce all required fields — including the "I agree" checkbox — before payment
+      if (typeof form.reportValidity === 'function' && !form.reportValidity()) return;
+      var agree = form.querySelector('input[type="checkbox"]');
+      if (agree && !agree.checked) { agree.focus(); return; }
       var ok = document.getElementById('form-success');
       form.style.display = 'none';
       if (ok) { ok.classList.add('show'); ok.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
@@ -230,6 +255,25 @@
       });
     }, { threshold: 0.5 });
     nums.forEach(function (el) { statIO.observe(el); });
+  }
+
+  // ---- card 3D tilt + cursor glare (pointer devices only, motion-safe) ----
+  if (window.matchMedia && window.matchMedia('(hover:hover) and (pointer:fine)').matches && !reduceMotion) {
+    document.querySelectorAll('.card, .tier, .speaker, .day').forEach(function (el) {
+      el.addEventListener('mousemove', function (e) {
+        var r = el.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width;
+        var py = (e.clientY - r.top) / r.height;
+        el.style.setProperty('--mx', (px * 100).toFixed(1) + '%');
+        el.style.setProperty('--my', (py * 100).toFixed(1) + '%');
+        el.style.transition = 'transform .08s ease-out';
+        el.style.transform = 'perspective(900px) rotateX(' + ((0.5 - py) * 6).toFixed(2) + 'deg) rotateY(' + ((px - 0.5) * 6).toFixed(2) + 'deg) translateY(-6px)';
+      });
+      el.addEventListener('mouseleave', function () {
+        el.style.transition = '';
+        el.style.transform = '';
+      });
+    });
   }
 
   // ---- floating demo chatbot (injected on every page) ----
