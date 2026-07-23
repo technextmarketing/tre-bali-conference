@@ -604,3 +604,14 @@ section{padding:clamp(60px,7.5vw,104px) 0;}
 @keyframes sumBump{0%{transform:scale(1);}40%{transform:scale(1.07);}100%{transform:scale(1);}}
 .summary .total #sum-total{display:inline-block;transition:color .2s ease;}
 .summary .total.bump #sum-total{animation:sumBump .4s ease;color:var(--amber-d);}
+
+/* ---------- mobile fit-ups (audit fixes) ---------- */
+@media(max-width:600px){
+  .attend-wrap{margin-bottom:22px;}
+  .attend-toggle{display:flex;width:100%;}
+  .attend-toggle .at-opt{flex:1 1 0;min-width:0;justify-content:center;padding:11px 8px;font-size:12.5px;gap:6px;}
+  .attend-toggle .at-opt svg{width:15px;height:15px;flex:0 0 auto;}
+}
+@media(max-width:380px){
+  .attend-toggle .at-opt{font-size:11.5px;padding:10px 6px;}
+}
