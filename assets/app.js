@@ -4,6 +4,11 @@
 
   document.documentElement.classList.add('js');
 
+  // Odoo lead bridge: paste the deployed Google Apps Script /exec URL here.
+  // The Odoo API key lives ONLY inside that script (server-side) — never in this file.
+  // Leave blank to keep the form in demo mode (no data sent).
+  var LEAD_ENDPOINT = '';
+
   // ---- footer year ----
   var y = document.getElementById('year');
   if (y) y.textContent = new Date().getFullYear();
@@ -221,6 +226,29 @@
       if (typeof form.reportValidity === 'function' && !form.reportValidity()) return;
       var agree = form.querySelector('input[type="checkbox"]');
       if (agree && !agree.checked) { agree.focus(); return; }
+      // send the registration to Odoo via the server-side bridge (fire-and-forget)
+      if (LEAD_ENDPOINT) {
+        try {
+          var v = function (id) { var el = document.getElementById(id); return el ? el.value : ''; };
+          var selTier = document.querySelector('input[name="tier"]:checked');
+          var attendEl = document.getElementById('sum-attend');
+          var totalEl = document.getElementById('sum-total');
+          var data = new URLSearchParams();
+          data.set('source', 'tre-bali-website');
+          data.set('first_name', v('fname'));
+          data.set('last_name', v('lname'));
+          data.set('email', v('email'));
+          data.set('phone', v('phone'));
+          data.set('country', v('country'));
+          data.set('quantity', v('qty'));
+          data.set('visa', v('visa'));
+          data.set('notes', v('notes'));
+          data.set('tier', selTier ? selTier.getAttribute('data-name') : '');
+          data.set('attendance', attendEl ? attendEl.textContent : '');
+          data.set('total', totalEl ? totalEl.textContent : '');
+          fetch(LEAD_ENDPOINT, { method: 'POST', mode: 'no-cors', body: data }).catch(function () {});
+        } catch (err) { /* never block the confirmation on a network hiccup */ }
+      }
       var ok = document.getElementById('form-success');
       form.style.display = 'none';
       if (ok) { ok.classList.add('show'); ok.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
