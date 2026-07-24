@@ -137,17 +137,18 @@ section{padding:clamp(60px,7.5vw,104px) 0;}
 .hero{
   position:relative;min-height:100vh;min-height:100dvh;display:flex;align-items:center;
   color:#fff;overflow:hidden;padding:120px 0 70px;
+  background:var(--teal) url('../images/hero-poster.jpg') center/cover no-repeat; /* fallback beneath the video */
 }
+.hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none;}
 .hero::before{
-  content:"";position:absolute;inset:0;
-  background:linear-gradient(115deg,rgba(15,61,62,.94) 0%,rgba(18,100,94,.86) 45%,rgba(23,117,107,.66) 100%),
-             url('../images/hero-bg.jpg') center/cover no-repeat;
-  z-index:0;
+  content:"";position:absolute;inset:0;z-index:1;
+  background:linear-gradient(115deg,rgba(15,61,62,.8) 0%,rgba(18,100,94,.6) 50%,rgba(23,117,107,.5) 100%),
+             linear-gradient(180deg,rgba(12,28,27,.12) 0%,rgba(12,28,27,.38) 100%);
 }
 .hero .glow{position:absolute;right:-140px;top:-120px;width:540px;height:540px;border-radius:50%;
-  background:radial-gradient(circle at 35% 35%,rgba(224,164,88,.4),rgba(224,164,88,0) 68%);z-index:1;pointer-events:none;}
-.hero .ring{position:absolute;right:40px;bottom:-180px;width:440px;height:440px;border-radius:50%;border:1px solid rgba(255,255,255,.16);z-index:1;pointer-events:none;}
-.hero .wrap{position:relative;z-index:2;width:100%;display:flex;flex-direction:column;align-items:center;text-align:center;}
+  background:radial-gradient(circle at 35% 35%,rgba(224,164,88,.4),rgba(224,164,88,0) 68%);z-index:2;pointer-events:none;}
+.hero .ring{position:absolute;right:40px;bottom:-180px;width:440px;height:440px;border-radius:50%;border:1px solid rgba(255,255,255,.16);z-index:2;pointer-events:none;}
+.hero .wrap{position:relative;z-index:3;width:100%;display:flex;flex-direction:column;align-items:center;text-align:center;}
 .hero h1{color:#fff;max-width:16ch;margin:0 auto;}
 .hero .kicker{color:var(--sage);margin-bottom:20px;display:block;}
 .hero .sub{font-family:var(--head);font-style:italic;font-size:clamp(20px,2.4vw,28px);color:var(--sage);margin-top:6px;}
@@ -504,6 +505,7 @@ section{padding:clamp(60px,7.5vw,104px) 0;}
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none!important;transition-duration:.01ms!important;}
   .js .reveal{opacity:1!important;transform:none!important;}
+  .hero-video{display:none!important;} /* fall back to the poster image */
 }
 
 /* ---------- responsive ---------- */
