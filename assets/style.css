@@ -599,3 +599,18 @@ section{padding:clamp(60px,7.5vw,104px) 0;}
 @media(max-width:380px){
   .attend-toggle .at-opt{font-size:11.5px;padding:10px 6px;}
 }
+
+/* ---------- more motion (no font glow) ---------- */
+/* scroll progress bar */
+.scroll-progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:70;pointer-events:none;
+  background:linear-gradient(90deg,var(--amber),var(--coral));transition:width .12s linear;}
+/* hero video slow ken-burns drift */
+@keyframes kenburns{0%{transform:scale(1.02) translate(0,0);}100%{transform:scale(1.14) translate(-2%,-1.5%);}}
+.hero-video{animation:kenburns 26s ease-in-out infinite alternate;}
+/* schedule + faq micro-interactions */
+.slot{border-radius:8px;transition:background .2s ease,padding-left .2s ease;}
+.slot:hover{background:var(--sand);padding-left:8px;}
+.faq details{transition:border-color .2s ease,box-shadow .2s ease;}
+.faq details:hover{border-color:var(--sage);box-shadow:var(--shadow-sm);}
+.s-session{transition:background .2s ease;}
+.speaker:hover .s-session{background:var(--sand-2);}

@@ -37,6 +37,19 @@
     window.addEventListener('resize', setHeader, { passive: true });
   }
 
+  // ---- scroll progress bar ----
+  var bar = document.createElement('div');
+  bar.className = 'scroll-progress';
+  document.body.appendChild(bar);
+  var setProgress = function () {
+    var st = window.scrollY || document.documentElement.scrollTop || 0;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.width = (h > 0 ? Math.min(st / h * 100, 100) : 0) + '%';
+  };
+  setProgress();
+  window.addEventListener('scroll', setProgress, { passive: true });
+  window.addEventListener('resize', setProgress, { passive: true });
+
   // ---- countdown ----
   // Event opens: 12 November 2027, 09:00 Bali time (WITA, UTC+8)
   var TARGET = new Date('2027-11-12T09:00:00+08:00').getTime();
