@@ -317,6 +317,129 @@
     });
   }
 
+  // ---- speaker profile modal + per-card share (works wherever .speaker cards exist) ----
+  (function () {
+    var cards = document.querySelectorAll('.speaker');
+    if (!cards.length) return;
+
+    var POOL = ['images/g1.jpg','images/g2.jpg','images/g3.jpg','images/g4.jpg','images/g5.jpg','images/g6.jpg','images/g7.jpg','images/g8.jpg'];
+    var IC = {
+      share:'<svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>',
+      fb:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M13.5 21v-7H16l.4-3h-2.9V9.2c0-.8.3-1.4 1.5-1.4H17V5.1C16.6 5 15.7 5 14.7 5c-2.1 0-3.6 1.3-3.6 3.7V11H8.5v3h2.6v7z"/></svg>',
+      x:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M17.5 3h3l-6.6 7.5L21.7 21h-6l-4.2-5.5L6.5 21h-3l7-8L2.3 3h6.1l3.8 5z"/></svg>',
+      li:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05C20.4 8.65 21 10.9 21 14v7h-4v-6.2c0-1.48-.03-3.38-2.06-3.38-2.06 0-2.38 1.6-2.38 3.27V21H9z"/></svg>',
+      th:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2C6.7 2 3 5.9 3 12s3.7 10 9 10 9-3.9 9-10S17.3 2 12 2zm4.4 11.4c.2 1.5-.3 3.3-2.7 4.2-1 .4-2.1.5-3.3.5-2.4 0-4.2-.8-5.4-2.4C4 14.5 3.6 12.9 3.6 12s.4-2.5 1.4-3.7C6.2 6.7 8 5.9 10.4 5.9c2.4 0 4.2.8 5.4 2.4.4.6.8 1.3 1 2.1l-1.6.4c-.2-.6-.4-1.1-.7-1.5-.8-1.1-2.1-1.6-3.9-1.6-1.8 0-3.1.5-3.9 1.6-.7 1-1 2.1-1 3.2s.3 2.2 1 3.2c.8 1.1 2.1 1.6 3.9 1.6 1.1 0 2-.2 2.6-.4 1.1-.4 1.4-1.2 1.3-1.9-.1-.5-.4-.9-.9-1.2-.2 1-.7 2.1-2.6 2.1-1.2 0-2.2-.8-2.2-1.9 0-1.3 1.1-2 2.7-2 .5 0 1 .1 1.4.2 0-.9-.6-1.5-1.5-1.5-.6 0-1.1.2-1.4.7l-1.4-.8c.5-.8 1.5-1.2 2.8-1.2z"/></svg>',
+      ig:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>',
+      cp:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>',
+      person:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:52px;height:52px"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a7 7 0 0 1 14 0v1"/></svg>'
+    };
+
+    var host = document.createElement('div');
+    host.innerHTML =
+      '<div class="pm-overlay" id="pm-ov"><div class="pm-card" role="dialog" aria-modal="true" aria-label="Speaker profile">' +
+        '<div class="pm-hero" id="pm-hero"></div><button class="pm-close" id="pm-x" aria-label="Close">×</button>' +
+        '<div class="pm-body">' +
+          '<div class="pm-role" id="pm-role"></div><div class="pm-name" id="pm-name"></div>' +
+          '<p class="pm-bio" id="pm-bio"></p><div class="pm-session" id="pm-session"></div>' +
+          '<div class="pm-socials" id="pm-socials"></div>' +
+          '<div class="pm-gallery-h">Gallery</div><div class="pm-gallery" id="pm-gal"></div>' +
+          '<div class="pm-share"><div class="pm-share-h">Share this facilitator</div><div class="share-row" id="pm-share"></div></div>' +
+        '</div></div></div>' +
+      '<div class="share-pop-ov" id="sp-ov"><div class="share-pop"><h4>Share</h4><p id="sp-name"></p><div class="share-row" id="sp-row"></div></div></div>' +
+      '<div class="toast" id="pm-toast"></div>';
+    document.body.appendChild(host);
+
+    var ov = document.getElementById('pm-ov'), spOv = document.getElementById('sp-ov'), toastEl = document.getElementById('pm-toast');
+    var toastTimer;
+    function toast(m){ toastEl.textContent = m; toastEl.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(function(){ toastEl.classList.remove('show'); }, 3400); }
+
+    function cardData(card){
+      var img = card.querySelector('.ph img');
+      var name = (card.querySelector('h3') || {}).textContent || 'Speaker';
+      var roleEl = card.querySelector('.s-role'); var role = roleEl ? roleEl.textContent.trim() : '';
+      var bio = (card.querySelector('.s-bio') || {}).textContent || '';
+      var session = (card.querySelector('.s-session') || {}).innerHTML || '';
+      var socials = (card.querySelector('.socials') || {}).innerHTML || '';
+      var gallery = (card.getAttribute('data-gallery') || '').split(',').filter(Boolean);
+      var url = location.origin + location.pathname + '?speaker=' + encodeURIComponent(card.id);
+      var photo = img ? img.src : (gallery[0] ? new URL(gallery[0], location.href).href : '');
+      var caption = name + ' — ' + role + ' at the TRE™ Worldwide Conference, Bali · 12–15 November 2027.';
+      return { id: card.id, name: name, role: role, bio: bio, session: session, socials: socials, gallery: gallery, url: url, photo: photo, caption: caption, hasPhoto: !!img };
+    }
+
+    function shareIG(d){
+      var cap = d.caption + '\n' + d.url;
+      function fallback(){ try { if (navigator.clipboard) navigator.clipboard.writeText(cap); } catch (e) {} if (d.photo) window.open(d.photo, '_blank', 'noopener'); toast('Caption copied — photo opened; save it and post to Instagram'); }
+      if (d.photo && navigator.canShare) {
+        fetch(d.photo).then(function(r){ return r.blob(); }).then(function(b){
+          var file = new File([b], 'tre-facilitator.jpg', { type: b.type || 'image/jpeg' });
+          if (navigator.canShare({ files: [file] })) { return navigator.share({ files: [file], text: cap }); }
+          throw 0;
+        }).catch(fallback);
+      } else { fallback(); }
+    }
+
+    function share(p, d){
+      var u = encodeURIComponent(d.url), t = encodeURIComponent(d.caption), tu = encodeURIComponent(d.caption + ' ' + d.url);
+      if (p === 'fb') window.open('https://www.facebook.com/sharer/sharer.php?u=' + u, '_blank', 'noopener,width=640,height=640');
+      else if (p === 'x') window.open('https://twitter.com/intent/tweet?text=' + t + '&url=' + u, '_blank', 'noopener,width=600,height=640');
+      else if (p === 'li') window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + u, '_blank', 'noopener,width=640,height=640');
+      else if (p === 'th') window.open('https://www.threads.net/intent/post?text=' + tu, '_blank', 'noopener,width=640,height=720');
+      else if (p === 'ig') shareIG(d);
+      else if (p === 'cp') { if (navigator.clipboard) { navigator.clipboard.writeText(d.url).then(function(){ toast('Link copied to clipboard'); }, function(){ toast(d.url); }); } else { toast(d.url); } }
+    }
+
+    function renderShare(el, d){
+      var defs = [['fb','Facebook'],['x','X'],['li','LinkedIn'],['th','Threads'],['ig','Instagram'],['cp','Copy link']];
+      el.innerHTML = '';
+      defs.forEach(function(x){
+        var b = document.createElement('button'); b.className = 'share-btn ' + x[0]; b.type = 'button';
+        b.innerHTML = IC[x[0]] + '<span>' + x[1] + '</span>';
+        b.addEventListener('click', function(e){ e.stopPropagation(); share(x[0], d); });
+        el.appendChild(b);
+      });
+    }
+
+    function openProfile(card){
+      var d = cardData(card);
+      var hero = document.getElementById('pm-hero');
+      if (d.hasPhoto) { hero.className = 'pm-hero'; hero.innerHTML = '<img src="' + d.photo + '" alt="' + d.name + '">'; }
+      else { hero.className = 'pm-hero placeholder'; hero.innerHTML = '<div style="text-align:center">' + IC.person + '<div style="margin-top:10px;font-weight:600">Speaker photo — to be announced</div></div>'; }
+      document.getElementById('pm-role').textContent = d.role;
+      document.getElementById('pm-name').textContent = d.name;
+      document.getElementById('pm-bio').textContent = d.bio;
+      document.getElementById('pm-session').innerHTML = d.session;
+      var soc = document.getElementById('pm-socials'); soc.innerHTML = d.socials; soc.style.display = d.socials ? 'flex' : 'none';
+      document.getElementById('pm-gal').innerHTML = d.gallery.map(function(g){ return '<img src="' + g + '" alt="" loading="lazy">'; }).join('');
+      renderShare(document.getElementById('pm-share'), d);
+      ov.classList.add('open'); document.body.style.overflow = 'hidden';
+      try { history.replaceState(null, '', location.pathname + '?speaker=' + encodeURIComponent(d.id)); } catch (e) {}
+    }
+    function closeProfile(){ ov.classList.remove('open'); document.body.style.overflow = ''; try { history.replaceState(null, '', location.pathname); } catch (e) {} }
+    function openSheet(d){ document.getElementById('sp-name').textContent = d.name; renderShare(document.getElementById('sp-row'), d); spOv.classList.add('open'); }
+    function closeSheet(){ spOv.classList.remove('open'); }
+
+    document.getElementById('pm-x').addEventListener('click', closeProfile);
+    ov.addEventListener('click', function(e){ if (e.target === ov) closeProfile(); });
+    spOv.addEventListener('click', function(e){ if (e.target === spOv) closeSheet(); });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape') { if (spOv.classList.contains('open')) closeSheet(); else if (ov.classList.contains('open')) closeProfile(); } });
+
+    Array.prototype.forEach.call(cards, function(card, i){
+      if (!card.id) card.id = 'spk-' + i;
+      if (!card.getAttribute('data-gallery')) card.setAttribute('data-gallery', [POOL[i % 8], POOL[(i + 3) % 8], POOL[(i + 5) % 8]].join(','));
+      var sb = document.createElement('button'); sb.className = 'card-share'; sb.type = 'button'; sb.setAttribute('aria-label', 'Share this facilitator'); sb.innerHTML = IC.share;
+      sb.addEventListener('click', function(e){ e.stopPropagation(); openSheet(cardData(card)); });
+      card.appendChild(sb);
+      card.setAttribute('role', 'button'); card.setAttribute('tabindex', '0');
+      card.addEventListener('click', function(){ openProfile(card); });
+      card.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openProfile(card); } });
+      var soc = card.querySelector('.socials'); if (soc) soc.addEventListener('click', function(e){ e.stopPropagation(); });
+    });
+
+    var sp = new URLSearchParams(location.search).get('speaker');
+    if (sp) { var c = document.getElementById(sp); if (c && c.classList.contains('speaker')) setTimeout(function(){ openProfile(c); }, 300); }
+  })();
+
   // ---- floating demo chatbot (injected on every page) ----
   (function () {
     if (document.querySelector('.chatbot')) return;
