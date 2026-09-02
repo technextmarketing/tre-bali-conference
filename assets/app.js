@@ -394,7 +394,8 @@
       el.innerHTML = '';
       defs.forEach(function(x){
         var b = document.createElement('button'); b.className = 'share-btn ' + x[0]; b.type = 'button';
-        b.innerHTML = IC[x[0]] + '<span>' + x[1] + '</span>';
+        b.innerHTML = IC[x[0]];
+        b.title = x[1]; b.setAttribute('aria-label', x[1] + ' — share');
         b.addEventListener('click', function(e){ e.stopPropagation(); share(x[0], d); });
         el.appendChild(b);
       });
