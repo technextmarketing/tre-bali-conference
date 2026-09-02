@@ -1,4 +1,4 @@
-/* TRE Worldwide Conference — Bali 2027 | site scripts */
+/* TRE™ Worldwide Conference — Bali 2027 | site scripts */
 (function () {
   'use strict';
 
@@ -362,7 +362,7 @@
       { k: /ticket|price|cost|pay|wave|how much/i, a: 'Tickets are released in rising-price waves — the earliest buyers pay the least. <b>In person</b> starts at $300 and <b>online</b> from $120. See the full breakdown on the <a href="index.html#tickets">Tickets section</a>.' },
       { k: /online|in.?person|virtual|stream|remote|attend/i, a: 'You can join <b>in person in Bali</b> (full 3.5 days + hands-on workshops) or <b>online by live-stream</b> (keynotes & panels + recordings). Choose your mode on the <a href="index.html#tickets">Tickets</a> toggle.' },
       { k: /date|when|schedul|programme|program/i, a: 'The conference runs <b>12–15 November 2027</b> — a 3.5-day gathering in Bali. The day-by-day flow is on the <a href="info.html#programme">Info page</a>.' },
-      { k: /visa|invitation|letter|passport/i, a: 'Many visitors enter Indonesia visa-free or on arrival. When you register we ask if you need a visa, and TRE Indonesia can issue an official <b>invitation letter</b>. More on the <a href="info.html#visa">Info page</a>.' },
+      { k: /visa|invitation|letter|passport/i, a: 'Many visitors enter Indonesia visa-free or on arrival. When you register we ask if you need a visa, and TRE™ Indonesia can issue an official <b>invitation letter</b>. More on the <a href="info.html#visa">Info page</a>.' },
       { k: /where|location|venue|bali|hotel|stay|travel|airport|fly/i, a: 'It’s in <b>Bali, Indonesia</b> — fly into Denpasar (DPS). The exact venue and a recommended hotel list are shared when you book. See <a href="info.html#hotels">travel & stay</a>.' },
       { k: /speaker|facilitator|workshop|host|who/i, a: 'Hosts, facilitators, workshop leads and guest speakers are listed on the <a href="speakers.html">Speakers page</a>, with more announced as the programme is confirmed.' },
       { k: /register|book|sign|reserve|join|buy/i, a: 'Reserve your place on the <a href="index.html#register">registration form</a> — pick in-person or online, choose your wave, and you’re set.' },
@@ -381,13 +381,13 @@
     function reply(text) {
       var ans = null, i;
       for (i = 0; i < ANSWERS.length; i++) { if (ANSWERS[i].k.test(text)) { ans = ANSWERS[i].a; break; } }
-      if (!ans) ans = 'I’m a demo assistant for the TRE Worldwide Conference. Try asking about <b>tickets</b>, <b>dates</b>, <b>online vs in-person</b>, <b>visas</b>, <b>location</b> or <b>speakers</b> — or email <a href="mailto:hello@technext.asia">hello@technext.asia</a>.';
+      if (!ans) ans = 'I’m a demo assistant for the TRE™ Worldwide Conference. Try asking about <b>tickets</b>, <b>dates</b>, <b>online vs in-person</b>, <b>visas</b>, <b>location</b> or <b>speakers</b> — or email <a href="mailto:hello@technext.asia">hello@technext.asia</a>.';
       setTimeout(function () { addMsg(ans, 'bot'); }, 420);
     }
     function greet() {
       if (greeted) return;
       greeted = true;
-      addMsg('Welcome to the <b>TRE Worldwide Conference</b> 🌴 I’m here to help — tap a topic below or type your question. <i>(demo assistant)</i>', 'bot');
+      addMsg('Welcome to the <b>TRE™ Worldwide Conference</b> 🌴 I’m here to help — tap a topic below or type your question. <i>(demo assistant)</i>', 'bot');
     }
     QUICK.forEach(function (q) {
       var b = document.createElement('button');
