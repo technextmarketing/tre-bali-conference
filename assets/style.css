@@ -706,3 +706,11 @@ section{padding:clamp(60px,7.5vw,104px) 0;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
 @media(max-width:560px){.pm-hero{height:240px;}.pm-gallery{grid-template-columns:repeat(2,1fr);}.pm-body{padding:22px 20px 26px;}}
+/* desktop: landscape orientation — photo left, details right */
+@media(min-width:760px){
+  .pm-overlay{align-items:center;padding:30px;}
+  .pm-card{display:grid;grid-template-columns:minmax(320px,45%) 1fr;max-width:980px;max-height:86vh;}
+  .pm-hero{height:100%;min-height:100%;}
+  .pm-hero img{height:100%;}
+  .pm-body{max-height:86vh;overflow-y:auto;}
+}
