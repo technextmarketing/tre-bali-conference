@@ -448,7 +448,8 @@ section{padding:clamp(60px,7.5vw,104px) 0;}
    Fade uses FIXED px (not %) so the reflection is a short strip regardless of heading height,
    and matching margins keep it clear of the content below. */
 @supports (-webkit-box-reflect:below){
-  h1,h2{-webkit-box-reflect:below 2px linear-gradient(rgba(0,0,0,.30) 0, rgba(0,0,0,.07) 8px, transparent 18px);}
+  /* box-reflect mirrors the selection highlight too — make reflected headings non-selectable to avoid a stray highlight strip */
+  h1,h2{-webkit-box-reflect:below 2px linear-gradient(rgba(0,0,0,.30) 0, rgba(0,0,0,.07) 8px, transparent 18px);-webkit-user-select:none;user-select:none;}
   h1{margin-bottom:24px;}
   h2{margin-bottom:20px;}
   .hero h1{margin-bottom:24px;}   /* override .hero h1{margin:0 auto} so the reflection has room */
@@ -714,3 +715,7 @@ section{padding:clamp(60px,7.5vw,104px) 0;}
   .pm-hero img{height:100%;}
   .pm-body{max-height:86vh;overflow-y:auto;}
 }
+
+/* clean, on-brand text selection */
+::selection{background:rgba(224,164,88,.32);color:inherit;}
+::-moz-selection{background:rgba(224,164,88,.32);color:inherit;}
