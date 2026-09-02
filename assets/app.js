@@ -440,6 +440,44 @@
     if (sp) { var c = document.getElementById(sp); if (c && c.classList.contains('speaker')) setTimeout(function(){ openProfile(c); }, 300); }
   })();
 
+  // ---- schedule: click a slot -> session detail popup ----
+  (function () {
+    var slots = document.querySelectorAll('.slot');
+    if (!slots.length) return;
+    var host = document.createElement('div');
+    host.innerHTML =
+      '<div class="sm-ov" id="sm-ov"><div class="sm-card" role="dialog" aria-modal="true" aria-label="Session details">' +
+        '<button class="sm-x" id="sm-x" aria-label="Close">×</button>' +
+        '<div class="sm-day" id="sm-day"></div><div class="sm-time" id="sm-time"></div>' +
+        '<h3 class="sm-title" id="sm-title"></h3><p class="sm-desc" id="sm-desc"></p>' +
+        '<div class="sm-note">Details are indicative — final sessions, times &amp; speakers are confirmed by the content team.</div>' +
+      '</div></div>';
+    document.body.appendChild(host);
+    var ov = document.getElementById('sm-ov');
+    function open(slot) {
+      var time = (slot.querySelector('.time') || {}).textContent || '';
+      var title = (slot.querySelector('.what') || {}).textContent || '';
+      var day = slot.closest('.day');
+      var dayName = day ? ((day.querySelector('h3') || {}).textContent || '') : '';
+      var daySub = day ? ((day.querySelector('.day-sub') || {}).textContent || '') : '';
+      var desc = slot.getAttribute('data-desc') || 'Full details for this session will be shared closer to the event.';
+      document.getElementById('sm-day').textContent = (dayName + (daySub ? ' · ' + daySub : '')).trim();
+      document.getElementById('sm-time').textContent = time;
+      document.getElementById('sm-title').textContent = title;
+      document.getElementById('sm-desc').textContent = desc;
+      ov.classList.add('open'); document.body.style.overflow = 'hidden';
+    }
+    function close() { ov.classList.remove('open'); document.body.style.overflow = ''; }
+    document.getElementById('sm-x').addEventListener('click', close);
+    ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && ov.classList.contains('open')) close(); });
+    Array.prototype.forEach.call(slots, function (s) {
+      s.setAttribute('role', 'button'); s.setAttribute('tabindex', '0');
+      s.addEventListener('click', function () { open(s); });
+      s.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(s); } });
+    });
+  })();
+
   // ---- floating demo chatbot (injected on every page) ----
   (function () {
     if (document.querySelector('.chatbot')) return;
